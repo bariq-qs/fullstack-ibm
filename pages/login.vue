@@ -8,16 +8,24 @@
           <div class="mb-3">
             <Label for="username" class="mb-1">Username</Label>
             <Input placeholder="Username" id="username" v-model="valueUsername"/>
-            <small v-if="errorMessageUsername" class="text-red-600">{{errorMessageUsername}}</small>
+            <small v-if="errorMessageUsername" class="text-red-600">{{ errorMessageUsername }}</small>
           </div>
           <div>
             <Label for="password" class="mb-1">Password</Label>
             <Input type="password" placeholder="Password" v-model="valuePassword"/>
-            <small v-if="errorMessagePassword" class="text-red-600">{{ errorMessagePassword}}</small>
+            <small v-if="errorMessagePassword" class="text-red-600">{{ errorMessagePassword }}</small>
           </div>
         </div>
         <div class="mt-6">
-          <Button class="bg-green-500 hover:bg-green-400 text-white w-full" type="submit">Login</Button>
+          <RecaptchaV2
+              @widget-id="handleWidgetId"
+              @error-callback="handleErrorCalback"
+              @expired-callback="handleExpiredCallback"
+              @load-callback="handleLoadCallback"
+          />
+          <Button class="bg-green-500 hover:bg-green-400 text-white w-full mt-3" type="submit"
+                  :disabled="!metaForm.valid">Login
+          </Button>
         </div>
       </form>
     </div>
@@ -30,6 +38,7 @@ import { Label } from "~/components/ui/label";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { initialValueLogin, LoginSchema, type TLoginSchema } from "~/utils/schema/user";
+import { RecaptchaV2 } from "vue3-recaptcha-v2";
 
 definePageMeta({
   layout: 'auth'
@@ -37,7 +46,8 @@ definePageMeta({
 
 const snackbar = useSnackbar();
 const {
-  handleSubmit
+  handleSubmit,
+  meta: metaForm
 } = useForm({
   validationSchema: toTypedSchema(LoginSchema),
   initialValues: initialValueLogin
@@ -51,13 +61,16 @@ const {
   value: valuePassword,
   errorMessage: errorMessagePassword
 } = useField<string>('password')
-
+const {
+  value: valueToken
+} = useField<string>('token')
 const processSubmit = async (values: TLoginSchema) => {
   await $fetch('/api/auth/login', {
     method: 'POST',
     body: {
       username: values.username,
-      password: values.password
+      password: values.password,
+      token: values.token
     },
     onResponse({response}) {
       if (response.ok) {
@@ -77,6 +90,26 @@ const processSubmit = async (values: TLoginSchema) => {
 const onSubmit = handleSubmit((values) => {
   processSubmit(values)
 })
+
+const handleWidgetId = (widgetId: number) => {
+  console.log("Widget ID: ", widgetId);
+};
+
+const handleErrorCalback = () => {
+  // console.log("Error callback");
+  valueToken.value = ''
+};
+const handleExpiredCallback = () => {
+  // console.log("Expired callback");
+  valueToken.value = ''
+};
+const handleLoadCallback = (response: unknown) => {
+  // console.log("Load callback", response);
+  const token = response ? response : ''
+  if (typeof token === "string") {
+    valueToken.value = token
+  }
+};
 </script>
 
 <style scoped lang="scss">

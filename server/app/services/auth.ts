@@ -37,8 +37,33 @@ class AuthService {
     }
   }
 
+  async validateTokenCaptcha(token: string) {
+    const SECRET_KEY = process.env.RECAPTCHA_SCRET_KEY
+    const response = await $fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${SECRET_KEY}&response=${token}`
+    )
+    if (response?.success) {
+      return {
+        success: true,
+        message: 'Captcha token verified.'
+      }
+    } else {
+      return {
+        success: false,
+        message: 'Captcha token not valid.'
+      }
+    }
+  }
+
   async login(event: H3Event, user: TLoginSchema) {
     try {
+      const validateToken = await this.validateTokenCaptcha(user.token)
+      if (!validateToken?.success) {
+        throw createError({
+          statusCode: 403,
+          message: validateToken.message
+        })
+      }
       const findUser = await getUserByUsername(user.username)
       if (findUser) {
         const isPasswordValid = await compare(
@@ -68,7 +93,7 @@ class AuthService {
         message: 'User not found.'
       })
     } catch (err) {
-
+      return sendError(event, err)
     }
   }
 }

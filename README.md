@@ -4,10 +4,10 @@
 * This project when intital use node version 18.19.0
 * Please ensure your node version is >= 18.19.0
 * Install postgres for DBMS
-* Create env file and add 
-`DATABASE_URL=postgresql://username:password@localhost:5432/name-db`<br />
-`JWT_SECRET`
-
+* Copy `.env.example` to `.env`
+```bash
+cp .env.example .env
+```
 ## Project setup
 ```bash
 yarn install

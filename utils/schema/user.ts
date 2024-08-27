@@ -6,12 +6,14 @@ export const LoginSchema = z.object({
       .min(1, `Username ${ERROR_MSG.FORM_REQUIRED}`),
   password: z
       .string()
-      .min(8, `Password ${ERROR_MSG.FORM_MAX_CHAR(8)}`)
+      .min(8, `Password ${ERROR_MSG.FORM_MAX_CHAR(8)}`),
+  token: z.string().min(1, `Token ${ERROR_MSG.FORM_REQUIRED}`),
 })
 
 export type TLoginSchema = z.infer<typeof LoginSchema>
 
 export const initialValueLogin: TLoginSchema = {
   username: '',
-  password: ''
+  password: '',
+  token: ''
 }

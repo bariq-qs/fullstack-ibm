@@ -27,6 +27,5 @@ function protectAuthRoute(event: H3Event) {
   ]
   const originalPath = event.path.split('?')[0]
   const findPath = protectedRoutes.find((v) => originalPath.startsWith(v))
-  console.log('findPath', findPath)
   return Boolean(findPath)
 }

@@ -20,6 +20,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/recaptcha": "^1.1.2",
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@prisma/nuxt": "^0.0.35",
     "@sidebase/nuxt-parse": "^0.3.0",
@@ -40,6 +41,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vue": "latest",
+    "vue3-recaptcha-v2": "^2.0.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
