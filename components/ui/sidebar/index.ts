@@ -1,0 +1,1 @@
+export { default as SidebarHome } from './Home.vue'

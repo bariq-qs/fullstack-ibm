@@ -1,0 +1,1 @@
+export { default as HeaderHome } from './Home.vue'
